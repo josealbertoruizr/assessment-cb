@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Select,
   SelectContent,
@@ -8,37 +8,43 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import type { SortValue } from "@/lib/sorting";
 
-export function SortSelect({
-  defaultValue = "price-asc",
-  onChange,
-}: {
-  defaultValue?: string;
-  onChange?: (value: string) => void;
-}) {
-  const [sortValue, setSortValue] = useState(defaultValue);
+interface Props {
+  defaultValue?: SortValue;
+  onChange?: (newSort: SortValue) => void;
+}
 
-  const handleSortChange = (value: string) => {
+export function SortSelect({ defaultValue = "price-asc", onChange }: Props) {
+  const [sortValue, setSortValue] = useState<SortValue>(defaultValue);
+
+  // Cuando defaultValue cambie desde el padre, sincronizamos
+  useEffect(() => {
+    setSortValue(defaultValue);
+  }, [defaultValue]);
+
+  const handleSortChange = (value: SortValue) => {
     setSortValue(value);
-    console.log("Orden interno:", value);
-    if (onChange) onChange(value);
+    onChange?.(value);
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <Select value={sortValue} onValueChange={handleSortChange}>
-        <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Price" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="price-asc">Price – Lowest first</SelectItem>
-          <SelectItem value="price-desc">Price – Highest first</SelectItem>
-          <SelectItem value="date-asc">Departure – Earliest first</SelectItem>
-          <SelectItem value="date-desc">Departure – Latest first</SelectItem>
-          <SelectItem value="duration-asc">Duration – Shortest</SelectItem>
-          <SelectItem value="duration-desc">Duration – Longest</SelectItem>
-        </SelectContent>
-      </Select>
-    </div>
+    <Select value={sortValue} onValueChange={handleSortChange}>
+      <SelectTrigger className="w-[200px]">
+        <SelectValue placeholder="Sort" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="price-asc">Price – Lowest first</SelectItem>
+        <SelectItem value="price-desc">Price – Highest first</SelectItem>
+        <SelectItem value="departureDate-asc">
+          Departure – Earliest first
+        </SelectItem>
+        <SelectItem value="departureDate-desc">
+          Departure – Latest first
+        </SelectItem>
+        <SelectItem value="duration-asc">Duration – Shortest</SelectItem>
+        <SelectItem value="duration-desc">Duration – Longest</SelectItem>
+      </SelectContent>
+    </Select>
   );
 }

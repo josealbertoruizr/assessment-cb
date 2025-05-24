@@ -19,7 +19,7 @@ export function Pagination({ currentPage, totalPages, onPageChange }: Props) {
     if (totalPages <= 7) {
       for (let i = 1; i <= totalPages; i++) arr.push(i);
     } else {
-      // si son muchas paginas, que salgan las 4 de los extremos y la actual
+      // si son muchas
       if (currentPage <= 4) {
         // Inicio: 1,2,3,4,5,...,last
         for (let i = 1; i <= 5; i++) arr.push(i);

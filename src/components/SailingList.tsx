@@ -3,12 +3,13 @@ import { SailingCard } from "@/components/SailingCard";
 import { SortSelect } from "@/components/SortSelector";
 import { Pagination } from "@/components/Pagination";
 import { Button } from "@/components/ui/button";
+import { SortValue } from "@/lib/sorting";
 
 interface Props {
   data: Sailing[];
   sortKey: string;
   ascending: boolean;
-  onSortChange: (value: string) => void;
+  onSortChange: (value: SortValue) => void;
   page: number;
   totalPages: number;
   onPageChange: (p: number) => void;
@@ -35,7 +36,19 @@ export default function SailingListView({
           <h1 className="text-lg font-semibold">Sort By</h1>
         </div>
         <SortSelect
-          defaultValue={`${sortKey}-${ascending ? "asc" : "desc"}`}
+          defaultValue={
+            sortKey === "price" ||
+            sortKey === "departureDate" ||
+            sortKey === "duration"
+              ? (`${sortKey}-${ascending ? "asc" : "desc"}` as
+                  | "price-asc"
+                  | "price-desc"
+                  | "departureDate-asc"
+                  | "departureDate-desc"
+                  | "duration-asc"
+                  | "duration-desc")
+              : undefined
+          }
           onChange={onSortChange}
         />
       </div>

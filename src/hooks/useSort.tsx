@@ -1,35 +1,35 @@
 import { useMemo } from "react";
 
-/**
- * Hook para ordenar un array de objetos por una key combinada.
- * @param items - array de los sailings.
- * @param key - key del objeto por la que se ordena.
- * @param ascending - true para ascendente, false para descendente.
- * @returns array ordenado.
- */
 export default function useSort<T, K extends keyof T>(
   items: T[],
   key: K,
   ascending: boolean = true
 ): T[] {
   return useMemo(() => {
-    const sorted = [...items].sort((a, b) => {
+    return [...items].sort((a, b) => {
       const aVal = a[key];
       const bVal = b[key];
 
-      // Si son strings, usar localeCompare
+      // Si ambos son strings, ve si parsean como fecha:
       if (typeof aVal === "string" && typeof bVal === "string") {
+        const aTime = Date.parse(aVal);
+        const bTime = Date.parse(bVal);
+
+        if (!isNaN(aTime) && !isNaN(bTime)) {
+          // comparador numérico de fechas
+          return ascending ? aTime - bTime : bTime - aTime;
+        }
+        // si no son fechas, caemos a comparar texto
         return ascending ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
       }
 
-      // Si son números, restar
+      // Números normales
       if (typeof aVal === "number" && typeof bVal === "number") {
         return ascending ? aVal - bVal : bVal - aVal;
       }
 
-      // Otros tipos: no cambia el orden
+      // por defecto, sin cambio
       return 0;
     });
-    return sorted;
   }, [items, key, ascending]);
 }

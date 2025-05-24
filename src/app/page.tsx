@@ -1,8 +1,9 @@
-import { fetchSailings } from "@/lib/api";
-import SailingListContainer from "@/components/SailingContainer";
+// src/app/page.tsx
+import SailingListContainer from "@/components/SailingListContainer";
+import { getSailings } from "@/lib/api";
 
-export default async function Home() {
-  const { results: sailings } = await fetchSailings();
+export default async function HomePage() {
+  const sailings = await getSailings();
   return (
     <main className="min-h-screen p-8">
       <SailingListContainer initialData={sailings} />
